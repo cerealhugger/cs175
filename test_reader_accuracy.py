@@ -5,18 +5,25 @@ from tensorflow.keras.models import load_model
 model = load_model("mnist_digit_model.h5")
 
 
-def calculate_accuracy(predicted, ground_truth):
+def calculate_digit_accuracy(predicted, ground_truth):
     predicted = np.array(predicted)
     ground_truth = np.array(ground_truth)
 
     if predicted.shape != (9, 9) or ground_truth.shape != (9, 9):
         raise ValueError("Both matrices must be 9x9.")
 
-    total_cells = 81
-    correct_cells = np.sum(predicted == ground_truth)
-    accuracy = correct_cells / total_cells
+    # Only evaluate cells that actually contain digits
+    digit_mask = ground_truth != 0
 
-    return correct_cells, total_cells, accuracy
+    total_digits = np.sum(digit_mask)
+
+    correct_digits = np.sum(
+        (predicted == ground_truth) & digit_mask
+    )
+
+    accuracy = correct_digits / total_digits
+
+    return correct_digits, total_digits, accuracy
 
 
 def print_mistakes(predicted, ground_truth):
@@ -47,10 +54,13 @@ def test_reader(image_path, ground_truth):
     print("\nGround truth matrix:")
     print(np.array(ground_truth))
 
-    correct, total, accuracy = calculate_accuracy(predicted, ground_truth)
+    correct, total, accuracy = calculate_digit_accuracy(
+        predicted,
+        ground_truth
+    )
 
-    print(f"\nCorrect cells: {correct}/{total}")
-    print(f"Accuracy: {accuracy * 100:.2f}%")
+    print(f"\nCorrect digit predictions: {correct}/{total}")
+    print(f"Digit accuracy: {accuracy * 100:.2f}%")
 
     print_mistakes(predicted, ground_truth)
 
