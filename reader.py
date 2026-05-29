@@ -185,7 +185,7 @@ def print_board(board):
 
 
 if __name__ == "__main__":
-    image_path = "img/sudoku2.png"
+    image_path = "img/sudoku3.png"
 
     board = image_to_sudoku_matrix(image_path,model)
 
