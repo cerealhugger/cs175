@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Solver</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <main class="app-shell">
+        <header class="app-header">
+            <div>
+                <p class="eyebrow">CS175 Sudoku Pipeline</p>
+                <h1>Sudoku Solver</h1>
+            </div>
+            <div class="status-pill" id="status">Ready</div>
+        </header>
+
+        <div class="message-box" id="messageBox" hidden></div>
+
+        <section class="workspace">
+            <div class="upload-panel">
+                <div class="panel-header">
+                    <h2>Image</h2>
+                    <button class="secondary-button" id="resetButton" type="button">Reset</button>
+                </div>
+
+                <form id="uploadForm">
+                    <label class="drop-zone" for="imageInput">
+                        <input id="imageInput" name="image" type="file" accept="image/*">
+                        <span class="drop-title">Choose Sudoku Image</span>
+                        <span class="drop-meta" id="fileName">PNG or JPG</span>
+                    </label>
+
+                    <button class="primary-button" type="submit">Read Board</button>
+                </form>
+
+                <div class="preview-frame">
+                    <img id="imagePreview" alt="Uploaded Sudoku preview">
+                    <span id="previewEmpty">No image selected</span>
+                </div>
+            </div>
+
+            <div class="board-panel">
+                <div class="panel-header">
+                    <h2>Review Board</h2>
+                    <select id="algorithmSelect" aria-label="Solver algorithm">
+                        <option value="mrv">MRV</option>
+                        <option value="backtracking">Backtracking</option>
+                        <option value="dancing-links">Dancing Links</option>
+                    </select>
+                </div>
+
+                <div class="sudoku-grid" id="boardGrid"></div>
+
+                <div class="action-row">
+                    <button class="primary-button" id="solveButton" type="button" disabled>Confirm and Solve</button>
+                </div>
+            </div>
+
+            <div class="solution-panel">
+                <div class="panel-header">
+                    <h2>Solution</h2>
+                    <div class="metric-strip">
+                        <span id="algorithmMetric">-</span>
+                        <span id="timeMetric">-</span>
+                        <span id="nodesMetric">-</span>
+                    </div>
+                </div>
+
+                <div class="sudoku-grid solved" id="solutionGrid"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/script.js"></script>
+</body>
+</html>

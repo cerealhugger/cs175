@@ -6,6 +6,11 @@ This project reads a Sudoku puzzle from an image, recognizes the digits using a 
 ## Project Structure
 ```text
 sudoku/
+├── app.py
+├── web/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
 ├── mnist.py
 ├── reader.py
 ├── solver.py
@@ -14,6 +19,38 @@ sudoku/
 ````
 
 ## Files
+
+### `app.py`
+
+This file runs the web application using Python's built-in HTTP server.
+
+Web app pipeline:
+
+```text
+User uploads Sudoku image
+↓
+app.py sends the image to reader.py
+↓
+reader.py returns a temporary 9x9 matrix
+↓
+User edits incorrect cells in the browser
+↓
+app.py sends the confirmed matrix to solver.py
+↓
+solver.py returns the solved Sudoku board
+↓
+Browser displays the solution
+```
+
+The frontend files live in `web/`:
+
+```text
+index.html = page structure
+style.css = layout and Sudoku board styling
+script.js = upload, editable board, and solve requests
+```
+
+---
 
 ### `mnist.py`
 
@@ -187,9 +224,15 @@ Train digit recognition model
 ↓
 mnist_digit_model.h5
 ↓
+app.py + web/
+↓
+User uploads image
+↓
 reader.py
 ↓
 Process Sudoku image and predict digits
+↓
+User corrects temporary board
 ↓
 9x9 matrix
 ↓
@@ -267,6 +310,18 @@ Run the solver comparison:
 python3 solver.py
 ```
 
+Run the web app:
+
+```bash
+python3 app.py
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000
+```
+
 ## Dependencies
 
 Recommended environment:
@@ -279,8 +334,10 @@ conda activate sudoku-cv
 Install dependencies:
 
 ```bash
-pip install opencv-python numpy tensorflow matplotlib
+pip install -r requirements.txt
 ```
+
+The requirements pin `numpy<2` because TensorFlow and related compiled packages can fail with NumPy 2.x in some Python environments.
 
 ## Notes
 
@@ -293,4 +350,3 @@ mnist.py = model training
 ```
 
 The final goal is to connect all three parts into one complete Sudoku-solving pipeline.
-

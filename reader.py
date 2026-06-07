@@ -1,8 +1,57 @@
 import cv2
 import numpy as np
-from tensorflow.keras.models import load_model
 
-model = load_model("mnist_digit_model.h5")
+MODEL_PATH = "mnist_digit_model.h5"
+_model = None
+
+
+def build_digit_model():
+    from tensorflow.keras.layers import (
+        BatchNormalization,
+        Conv2D,
+        Dense,
+        Dropout,
+        Flatten,
+        Input,
+        MaxPooling2D,
+    )
+    from tensorflow.keras.models import Sequential
+
+    return Sequential([
+        Input(shape=(28, 28, 1)),
+        Conv2D(32, (3, 3), activation="relu"),
+        BatchNormalization(),
+        MaxPooling2D((2, 2)),
+
+        Conv2D(64, (3, 3), activation="relu"),
+        BatchNormalization(),
+        MaxPooling2D((2, 2)),
+
+        Conv2D(128, (3, 3), activation="relu"),
+        BatchNormalization(),
+
+        Flatten(),
+
+        Dense(128, activation="relu"),
+        Dropout(0.4),
+
+        Dense(10, activation="softmax")
+    ])
+
+
+def get_model(model_path=MODEL_PATH):
+    global _model
+
+    if _model is None:
+        from tensorflow.keras.models import load_model
+
+        try:
+            _model = load_model(model_path, compile=False)
+        except Exception:
+            _model = build_digit_model()
+            _model.load_weights(model_path)
+
+    return _model
 
 
 def order_points(pts):
@@ -163,6 +212,9 @@ def classify_digit(digit_img, model=None):
 
 
 def image_to_sudoku_matrix(image_path, model=None):
+    if model is None:
+        model = get_model()
+
     warped, cells = preprocess(image_path)
 
     board = np.zeros((9, 9), dtype=int)
@@ -185,9 +237,9 @@ def print_board(board):
 
 
 if __name__ == "__main__":
-    image_path = "img/sudoku3.png"
+    image_path = "img/sudoku2.png"
 
-    board = image_to_sudoku_matrix(image_path,model)
+    board = image_to_sudoku_matrix(image_path)
 
     print("Detected Sudoku matrix:")
     print_board(board)
