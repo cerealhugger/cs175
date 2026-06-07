@@ -1,7 +1,7 @@
 
 # Sudoku Solver with Computer Vision
 
-This project reads a Sudoku puzzle from an image, recognizes the digits using a trained MNIST-based model, converts the puzzle into a 9x9 matrix, and solves it using backtracking.
+This project reads a Sudoku puzzle from an image, recognizes the digits using a trained MNIST-based model, converts the puzzle into a 9x9 matrix, and solves it with multiple algorithms that can be compared for efficiency.
 
 ## Project Structure
 ```text
@@ -106,7 +106,13 @@ Currently, `reader.py` focuses on image preprocessing and single-digit predictio
 
 ### `solver.py`
 
-This file solves the Sudoku puzzle using backtracking.
+This file solves the Sudoku puzzle using three algorithms:
+
+```text
+Baseline backtracking
+Minimum remaining value (MRV)
+Dancing Links / Algorithm X
+```
 
 Input:
 
@@ -128,7 +134,7 @@ Each column must contain digits 1-9 without repetition
 Each 3x3 subgrid must contain digits 1-9 without repetition
 ```
 
-Solver pipeline:
+Baseline backtracking pipeline:
 
 ```text
 Receive 9x9 Sudoku matrix
@@ -146,6 +152,28 @@ Recursively solve the rest of the board
 Backtrack if no valid digit works
 ↓
 Return solved board
+```
+
+MRV uses the same recursive backtracking structure, but it chooses the empty cell with the fewest legal candidate digits first. This usually reduces unnecessary search because the most constrained cells are handled earlier.
+
+Dancing Links converts Sudoku into an exact-cover problem. Each possible digit placement covers four constraints:
+
+```text
+Each cell has one digit
+Each row contains each digit once
+Each column contains each digit once
+Each 3x3 box contains each digit once
+```
+
+The solver then uses Algorithm X with cover/uncover operations to search for a set of placements that covers every constraint exactly once.
+
+`solver.py` also includes `compare_solvers(board)`, which runs all three solvers on the same puzzle and reports:
+
+```text
+algorithm name
+whether it solved the board
+runtime in seconds
+nodes visited
 ```
 
 ---
@@ -233,7 +261,7 @@ Run the image reader:
 python3 reader.py
 ```
 
-Run the solver:
+Run the solver comparison:
 
 ```bash
 python3 solver.py
@@ -265,5 +293,4 @@ mnist.py = model training
 ```
 
 The final goal is to connect all three parts into one complete Sudoku-solving pipeline.
-
 
